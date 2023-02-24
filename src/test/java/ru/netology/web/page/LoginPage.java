@@ -7,7 +7,7 @@ import static com.codeborne.selenide.Selectors.by;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
-public class LoginPageV1 {
+public class LoginPage {
     public VerificationPage validLogin(DataHelper.AuthInfo info) {
         $("[data-test-id=login] input").setValue(info.getLogin());
         $("[data-test-id=password] input").setValue(info.getPassword());
@@ -15,7 +15,7 @@ public class LoginPageV1 {
         return new VerificationPage();
     }
 
-    public LoginPageV1 invalidLogin(DataHelper.AuthInfo info) {
+    public LoginPage invalidLogin(DataHelper.AuthInfo info) {
         $("[data-test-id=login] input").setValue(info.getLogin());
         $("[data-test-id=password] input").setValue(info.getPassword());
         $("[data-test-id=action-login]").click();
