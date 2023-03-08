@@ -1,56 +1,26 @@
 package ru.netology.web.test;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import ru.netology.web.data.CardInfo;
 import ru.netology.web.data.DataHelper;
-import ru.netology.web.page.*;
+import ru.netology.web.page.TransferPage;
+import ru.netology.web.page.DashboardPage;
+import ru.netology.web.page.LoginPage;
+import org.junit.jupiter.api.Test;
 
-import static com.codeborne.selenide.Selenide.*;
+import static ru.netology.web.data.DataHelper.getCardNumber2;
+import static com.codeborne.selenide.Selenide.open;
 
-
-class MoneyTransferTest {
-
-    @BeforeEach
-    public void setup() {
+public class MoneyTransferTest {
+    @Test
+    void shouldTransferMoneyBetweenOwnCards() {
         open("http://localhost:9999");
-    }
-
-    @Test
-    void shouldTransferMoneyBetweenOwnCardsFirstCard() {
+        var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfo();
-        new LoginPage()
-                .validLogin(authInfo)
-                .validVerify(DataHelper.getVerificationCodeFor(authInfo));
-        new TransferPage().transferCard(CardInfo.Cards.getFirstCard().getCard(), "5000");
-    }
-
-    @Test
-    void shouldTransferMoneyBetweenOwnCardsSecondCard() {
-        var authInfo = DataHelper.getAuthInfo();
-        new LoginPage()
-                .validLogin(authInfo)
-                .validVerify(DataHelper.getVerificationCodeFor(authInfo));
-        new TransferPage().transferCard(CardInfo.Cards.getSecondCard().getCard(), "5000");
-    }
-
-    @Test
-    void shouldBeVisibleFirstCardBalance() {
-        var authInfo = DataHelper.getAuthInfo();
-        new LoginPage()
-                .validLogin(authInfo)
-                .validVerify(DataHelper.getVerificationCodeFor(authInfo));
-        new DashboardPage()
-                .getCardBalance(0);
-    }
-
-    @Test
-    void shouldBeVisibleSecondCardBalance() {
-        var authInfo = DataHelper.getAuthInfo();
-        new LoginPage()
-                .validLogin(authInfo)
-                .validVerify(DataHelper.getVerificationCodeFor(authInfo));
-        new DashboardPage()
-                .getCardBalance(1);
+        var verificationPage = loginPage.validLogin(authInfo);
+        var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
+        verificationPage.validVerify(verificationCode);
+        var dashboardPage = new DashboardPage();
+        var cardNumber = dashboardPage.clicksOnCard();
+        var cardTopUpPage = new TransferPage();
+        cardTopUpPage.shouldTransferMoney(getCardNumber2());
     }
 }
